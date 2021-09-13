@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./bulma_css/bulma.min.css">
+</head>
+<body>
+    <center>
+        <span style="padding: 1em; font-weight: 500; font-size: 2em;">
+            Digital Health Care
+        </span>
+        <br>
+        <span style="font-size: .8em;">
+            {{now_date}}
+        </span>
+
+    <br><br>
+
+    <table class="table is-bordered">
+        <tr>
+            <th colspan="2" style="text-align: center;">Personal Info</th>
+        </tr>
+
+        <tr>
+            <td>Patient Name</td>
+            <td>{{NAME}}</td>
+        </tr>
+
+        <tr>
+            <td>Phone Number</td>
+            <td>{{PHONE_NUMBER}}</td>
+        </tr>
+    </table>
+
+    <table class="table is-bordered">
+        <tr>
+            <th colspan="2" style="text-align: center;">Diagnosis Report</th>
+        </tr>
+
+        <tr>
+            <td>Body Temperature</td>
+            <td>{{BODY_TEMP}}</td>
+        </tr>
+
+        <tr>
+            <td>Oxygen Level (spO2)</td>
+            <td>{{O2_LEVEL}}</td>
+        </tr>
+
+        <tr>
+            <td>Heart Beat Rate</td>
+            <td>{{HEART_RATE}}</td>
+        </tr>
+
+    </table>
+
+    <br>
+
+    <h1>
+        <u>Prescription</u>
+    </h1>
+    {{PRESCRIPTION}}
+</center>
+</body>
+</html>
