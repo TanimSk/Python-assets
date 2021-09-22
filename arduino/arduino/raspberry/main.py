@@ -17,7 +17,7 @@ while True:
     if data[0] == "data":
         img.PHONE_NUMBER = data[1]
         img.BODY_TEMP = data[2]
-        
+        img.REPORT = data[3]
 
     elif data[0] == "audio":
         path = f"./audio/{data[1]}"

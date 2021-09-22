@@ -20,6 +20,7 @@ class PrintImage(object):
         self.BODY_TEMP = "not given"
         self.OXYZEN_LEVEL = "not given"
         self.HEART_BEAT = "not given"
+        self.REPORT = ""
 
         self.post_init()
 
@@ -43,9 +44,14 @@ class PrintImage(object):
         self.canvas.text(
             (350, 338), str(self.HEART_BEAT), font=self.my_font, fill=self.__COLOR
         )
+
+        self.canvas.text(
+            (230, 455), str(self.REPORT), font=self.my_font, fill=self.__COLOR
+        )
+
         self.__img.save("report.png")
 
 
 if __name__ == "__main__":
     # If you wanna test it
-    Report().write()
+    PrintImage().write()
