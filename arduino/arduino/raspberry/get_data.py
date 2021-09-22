@@ -2,7 +2,13 @@ import time
 import serial
 import json
 
-ser = serial.Serial(port='COM10', baudrate=9600, timeout=.1)
+ser = serial.Serial(port='COM3', baudrate=9600, timeout=.1)
+
+
+def send_data(string):
+    for cnt in range(10):
+        ser.write(bytes(string, 'utf-8'))
+        time.sleep(0.01)
 
 def get_data():
     while True:
