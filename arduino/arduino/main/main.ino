@@ -45,6 +45,8 @@ String Report = "";
 String eye_check = "4854";
 String seen_value = "";
 
+float lens_power = 0.25;
+
 float body_temperature = 0;
 
 void setup(){
@@ -55,7 +57,7 @@ void setup(){
   myservo4.attach(3);
   
   myservo1.write(0);  
-  myservo2.write(0);
+  myservo2.write(55);
   myservo3.write(90);
   myservo4.write(0);
   delay(500);
@@ -64,6 +66,10 @@ void setup(){
   while(true){
     key = customKeypad.getKey();
      if (key == '1'){
+       lcd.setCursor(4, 0);
+       lcd.print("Started");
+       lcd.setCursor(3, 1);
+       lcd.print("Robo Care");
       break;
      }
   }
@@ -83,11 +89,15 @@ void loop(){
   
   if (distance < 65 && distance > 0){
     play_audio("1.wav"); //welcome audio
-    
-    delay(1000);
+    delay(500);
+    lcd.clear();
     lcd.print("Phone Number :  ");
     lcd.setCursor(1, 1);
-
+    myservo1.write(0);  
+    myservo2.write(55);
+    myservo3.write(90);
+    myservo4.write(0);
+    delay(100);
     
     while(true){
       key = customKeypad.getKey();
@@ -110,7 +120,6 @@ void loop(){
 }
 
 void check_up(){
-  lcd.clear();
   lcd.print("Enter an Option:");
   lcd.setCursor(7, 1);
   while(true){
@@ -124,10 +133,12 @@ void check_up(){
   lcd.clear();
   if(key == 'A'){
     lcd.print("Fever Checkup");
-    play_audio("2.wav");
-    myservo1.write(40);
+    lcd.setCursor(2, 1);
+    lcd.print("Please wait");
+    play_audio("2.wav"); // fever -- put your hand here
+    myservo1.write(55);
     delay(500);
-    for(int i = 0; i<100; i++){
+    for(int i = 0; i<50; i++){
         Read = analogRead(A0);                //Acquisition analog value Read
         Read = (5.00 / 1023.00) * Read;      //Conversion to voltage
         VR = VCC - Read;
@@ -137,7 +148,7 @@ void check_up(){
         Temp = (1 / ((ln / B) + (1 / T0))); //Temperature from sensor
       
         Temp = ((Temp - 273.15)*1.8)+41;    //Conversion to Farenheit   32
-      Serial.println(Temp);
+//      Serial.println(Temp);
       delay(120);
     }
     lcd.clear();
@@ -145,70 +156,92 @@ void check_up(){
     lcd.setCursor(5, 1);
     lcd.print(Temp);
     if(Temp > 100){
-      myservo3.write(0);
+      myservo3.write(25);
       delay(500);
-      Report += "Napa - Each dose after 6 hours";
+      Report += "Napa - Each dose after 6 hours ";
       myservo3.write(90);
       delay(500);
-      play_audio("ksdmfksm.wav"); //Please receive your medicine audio
+      play_audio("2.wav"); //Please receive your medicine audio
     }
+    myservo1.write(0);
   }
   
   else if(key == 'B'){
     lcd.clear();
     lcd.print("Cough Treatment");
-    play_audio("vsd.wav");  //cough treatment audio
-    myservo3.write(180);
+    play_audio("2.wav");  //cough treatment audio
+    myservo3.write(165);
     delay(500);
-    Report += "\n Alatrol - One dose per day";
+    Report += "Alatrol - One dose per day ";
     myservo3.write(90);
     delay(500);
-    play_audio("ksdmfksm.wav");//Please receive your medicine audio
+    play_audio("2.wav");//Please receive your medicine audio
   }
 
   else if(key == 'C'){
-      play_audio("898.wav"); //eye glass ejection audio
+      play_audio("1.wav"); //eye glass ejection audio
       lcd.print("Eye Checkup");
       myservo4.write(35);
       delay(200);
+      lcd.setCursor(0, 1);
       while(true){
         for(int c = 0; c < eye_check.length(); c++){
           while(true){
             key = customKeypad.getKey();
               if(key){
                 seen_value += key;
+                lcd.print(key);
                 break; 
               }
             }
         }
         if(seen_value == eye_check){
-          play_audio("mk.wav"); //correct glass audio
+          play_audio("2.wav"); //correct glass audio
           lcd.clear();
           lcd.print("correct glass");
+          Report += "lens power: " + String(lens_power);
           break;
         }
         else{
-          play_audio("sdfs.wav"); //take another glass
+          play_audio("1.wav"); //take another glass
           lcd.clear();
-          lcd.print("take another glass");
+          lcd.setCursor(1, 0);
+          lcd.print("take another");
+          lcd.setCursor(4, 1);
+          lcd.print("glass");
+          seen_value = "";
+          lens_power += 0.25;
+          delay(1000);
+          lcd.clear();
+          lcd.print("Enter Again:");
+          lcd.setCursor(0, 1);
         }
       }
   }
 
   else if(key == 'D'){
+    lcd.setCursor(2, 0);
     lcd.print("Heart Rate");
+    lcd.setCursor(2, 1);
+    lcd.print("Please Wait");
     enable_sensor();
     delay(100);
-    play_audio("gd.wav"); // please put your hand
-    myservo2.write(90);
+    play_audio("2.wav"); // please put your hand
+    myservo2.write(0);
     delay(200);
-    while (Serial.available()){
-      lcd.print(Serial.read());
-      break;
+    while (true){
+      if(Serial.available()>0){
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print(Serial.readString());
+        break;
+      }
     }
+    myservo2.write(55);
   }
 
   else if(key == '#'){
+    lcd.clear();
     lcd.print("Printing report");
     lcd.setCursor(0, 1);
     send_data(Phone_number, Temp, Report);
@@ -227,7 +260,7 @@ void check_up(){
     check_up();
   }
 
-  play_audio("fd.wav"); // ask for further service
+  play_audio("1.wav"); // ask for further service
   while(true){
     key = customKeypad.getKey();
     if(key){
@@ -235,8 +268,9 @@ void check_up(){
         check_up();
       }
       else{
+        lcd.clear();
         lcd.print("Printing report");
-        lcd.setCursor(0, 1);
+        lcd.setCursor(2, 1);
         send_data(Phone_number, Temp, Report);
         delay(100);
         print_report();
@@ -249,17 +283,3 @@ void check_up(){
     }
   }
 }
-
-/*
-customKeypad.getKey()
-if (customKey){
-    Serial.println(customKey);
-  }
-
- lcd.print("Hello, world!");
- delay(1000);
-  send_data("01760001377", 10, 1056, 5.55);
-  delay(1000);
-  play_audio("1.wav");
-
-*/

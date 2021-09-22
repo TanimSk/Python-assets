@@ -16,10 +16,11 @@ class PrintImage(object):
         self.__COLOR = (0, 0, 0)
         self.__img = Image.open(BytesIO(base64.b64decode(self.BASE_IMAGE)))
 
-        self.PHONE_NUMBER = 0
-        self.BODY_TEMP = 0
-        self.OXYZEN_LEVEL = 0
-        self.HEART_BEAT = 0
+        self.PHONE_NUMBER = ''
+        self.BODY_TEMP = ''
+        self.OXYZEN_LEVEL = ''
+        self.HEART_BEAT = ''
+        self.REPORT = ''
 
         self.post_init()
 
@@ -27,7 +28,13 @@ class PrintImage(object):
         self.my_font = ImageFont.truetype(BytesIO(base64.b64decode(self.FONT)), 12)
         self.canvas = ImageDraw.Draw(self.__img)
 
-    def write(self):
+    def write(self, phone_number, body_temp, oxygen_level,heart_rate, report):
+        self.PHONE_NUMBER = phone_number
+        self.BODY_TEMP = body_temp
+        self.OXYZEN_LEVEL = oxygen_level
+        self.HEART_BEAT = heart_rate
+        self.REPORT = report 
+
         self.canvas.text(
             (240, 50), str(date.today()), font=self.my_font, fill=self.__COLOR
         )
@@ -43,9 +50,11 @@ class PrintImage(object):
         self.canvas.text(
             (350, 338), str(self.HEART_BEAT), font=self.my_font, fill=self.__COLOR
         )
+        self.canvas.text(
+            (230, 460), str(self.REPORT), font=self.my_font, fill=self.__COLOR
+        )
         self.__img.save("report.png")
 
 
 if __name__ == "__main__":
-    # If you wanna test it
-    Report().write()
+    PrintImage().write('01711303183', '170','80','29','None')
